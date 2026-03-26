@@ -1,6 +1,6 @@
 const SHEET_ID = "1CBVE5_5pAc5aeUytlaenFeoQDNCGg1qAqmlALUV7sh0";
 const BOT_TOKEN = "8365935226:AAGTV3GtQBA-TvABozh5978PQIwLToFT9wo";
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby-iUCVwWy9ds5lPdBWzBVM0hmwb3Y1Wdr3Z7cXjJlYKCjdgQ5MX765E5GNmV-JifX-sQ/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxF_tR5LOmlauG3zYIZSJ6ydjZs_FdB0FjgtrwTBaxEYgJVKaOV_kFCs6TCUPTJNqylRw/exec";
 
 const MAIN_KEYBOARD = {
   keyboard: [

@@ -1,7 +1,6 @@
 const SHEET_ID = "1CBVE5_5pAc5aeUytlaenFeoQDNCGg1qAqmlALUV7sh0";
 const BOT_TOKEN = "8365935226:AAGTV3GtQBA-TvABozh5978PQIwLToFT9wo";
-const SCRIPT_URL = ""; // сюди вставимо URL Apps Script
-
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby-iUCVwWy9ds5lPdBWzBVM0hmwb3Y1Wdr3Z7cXjJlYKCjdgQ5MX765E5GNmV-JifX-sQ/exec";
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(200).send("OK");
   

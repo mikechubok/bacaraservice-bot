@@ -111,7 +111,7 @@ async function handleMessage(msg) {
     }
     for (const call of data.calls) {
       const keyboard = { inline_keyboard: [[
-        { text: "📥 Взяти в роботу", callback_data: `take_${call.row}_${userId}` }
+        { text: "📥 Взяти в роботу", callback_data: `take_${call.row}` }
       ]]};
       await sendMessage(chatId, call.text, keyboard);
     }

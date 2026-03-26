@@ -1,17 +1,21 @@
 const SHEET_ID = "1CBVE5_5pAc5aeUytlaenFeoQDNCGg1qAqmlALUV7sh0";
 const BOT_TOKEN = "8365935226:AAGTV3GtQBA-TvABozh5978PQIwLToFT9wo";
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby-iUCVwWy9ds5lPdBWzBVM0hmwb3Y1Wdr3Z7cXjJlYKCjdgQ5MX765E5GNmV-JifX-sQ/exec";
+
+const MAIN_KEYBOARD = {
+  keyboard: [
+    [{ text: "📋 Маршрут" }, { text: "📥 Вхідні" }],
+    [{ text: "📊 Статус" }]
+  ],
+  resize_keyboard: true,
+  persistent: true
+};
+
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(200).send("OK");
-  
   const update = req.body;
-  
-  if (update.message) {
-    await handleMessage(update.message);
-  } else if (update.callback_query) {
-    await handleCallback(update.callback_query);
-  }
-  
+  if (update.message) await handleMessage(update.message);
+  else if (update.callback_query) await handleCallback(update.callback_query);
   res.status(200).send("OK");
 }
 
@@ -41,28 +45,34 @@ async function callScript(action, params) {
 
 async function handleMessage(msg) {
   const chatId = msg.chat.id;
-  const text = msg.text || "";
+  let text = msg.text || "";
   const userId = msg.from.id.toString();
 
+  // Замінюємо кнопки на команди
+  if (text === "📋 Маршрут") text = "/маршрут";
+  if (text === "📥 Вхідні") text = "/вхідні";
+  if (text === "📊 Статус") text = "/статус";
+
+  const userInfo = await callScript("getUser", { userId });
+
+  // /start для вже зареєстрованих
+  if ((text === "/start" || text === "/старт") && userInfo.name) {
+    await sendMessage(chatId, `👋 Привіт, ${userInfo.name}!`, MAIN_KEYBOARD);
+    return;
+  }
+
+  // /start для нових
   if (text === "/start" || text === "/старт") {
     await sendMessage(chatId, "👋 Привіт! Введи своє ім'я як воно є в таблиці (наприклад: Хоцький Артур)");
     await callScript("setState", { userId, state: "awaiting_name" });
     return;
   }
 
-  const userInfo = await callScript("getUser", { userId });
-  
+  // Реєстрація імені
   if (userInfo.state === "awaiting_name") {
     await callScript("registerUser", { userId, name: text, chatId });
-    const keyboard = {
-  keyboard: [
-    [{ text: "📋 Маршрут" }, { text: "📥 Вхідні" }],
-    [{ text: "📊 Статус" }]
-  ],
-  resize_keyboard: true,
-  persistent: true
-};
-await sendMessage(chatId, `✅ Зареєстровано як: ${text}`, keyboard);
+    await sendMessage(chatId, `✅ Зареєстровано як: ${text}\n\nОбирай дію:`, MAIN_KEYBOARD);
+    return;
   }
 
   if (!userInfo.name) {
@@ -70,10 +80,19 @@ await sendMessage(chatId, `✅ Зареєстровано як: ${text}`, keyboa
     return;
   }
 
+  // Коментар
+  if (userInfo.state && userInfo.state.startsWith("comment_")) {
+    const row = userInfo.state.replace("comment_", "");
+    await callScript("addComment", { row, comment: text });
+    await callScript("setState", { userId, state: "" });
+    await sendMessage(chatId, "💬 Коментар додано!", MAIN_KEYBOARD);
+    return;
+  }
+
   if (text === "/маршрут") {
     const data = await callScript("getMyRoutes", { userName: userInfo.name });
     if (!data.calls || data.calls.length === 0) {
-      await sendMessage(chatId, "📋 У тебе немає активних викликів сьогодні");
+      await sendMessage(chatId, "📋 У тебе немає активних викликів сьогодні", MAIN_KEYBOARD);
       return;
     }
     for (const call of data.calls) {
@@ -87,7 +106,7 @@ await sendMessage(chatId, `✅ Зареєстровано як: ${text}`, keyboa
   } else if (text === "/вхідні") {
     const data = await callScript("getIncoming", {});
     if (!data.calls || data.calls.length === 0) {
-      await sendMessage(chatId, "📭 Немає вхідних викликів");
+      await sendMessage(chatId, "📭 Немає вхідних викликів", MAIN_KEYBOARD);
       return;
     }
     for (const call of data.calls) {
@@ -98,12 +117,7 @@ await sendMessage(chatId, `✅ Зареєстровано як: ${text}`, keyboa
     }
   } else if (text === "/статус") {
     const data = await callScript("getStatus", { userName: userInfo.name });
-    await sendMessage(chatId, `📊 Статистика:\n✅ Виконано: ${data.done}\n🔴 В роботі: ${data.active}\n📈 Всього: ${data.total} (${data.percent}%)`);
-  } else if (userInfo.state && userInfo.state.startsWith("comment_")) {
-    const row = userInfo.state.replace("comment_", "");
-    await callScript("addComment", { row, comment: text });
-    await callScript("setState", { userId, state: "" });
-    await sendMessage(chatId, "💬 Коментар додано!");
+    await sendMessage(chatId, `📊 Статистика:\n✅ Виконано: ${data.done}\n🔴 В роботі: ${data.active}\n📈 Всього: ${data.total} (${data.percent}%)`, MAIN_KEYBOARD);
   }
 }
 
@@ -112,7 +126,7 @@ async function handleCallback(query) {
   const userId = query.from.id.toString();
   const data = query.data;
   await answerCallback(query.id);
-  
+
   const userInfo = await callScript("getUser", { userId });
 
   if (data.startsWith("done_")) {

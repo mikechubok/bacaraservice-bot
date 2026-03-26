@@ -131,8 +131,23 @@ async function handleCallback(query) {
 
   if (data.startsWith("done_")) {
     const row = data.replace("done_", "");
-    await callScript("markDone", { row });
-    await sendMessage(chatId, "✅ Виклик закрито!");
+    const status = await callScript("getRowStatus", { row });
+    if (status.done) {
+      await sendMessage(chatId, "⚠️ Виклик вже закритий!");
+    } else {
+      await callScript("markDone", { row });
+      // Прибираємо кнопки з повідомлення
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/editMessageReplyMarkup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: chatId,
+          message_id: query.message.message_id,
+          reply_markup: { inline_keyboard: [] }
+        })
+      });
+      await sendMessage(chatId, "✅ Виклик закрито!");
+    }
   } else if (data.startsWith("comment_")) {
     const row = data.replace("comment_", "");
     await callScript("setState", { userId, state: `comment_${row}` });

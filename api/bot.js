@@ -54,8 +54,15 @@ async function handleMessage(msg) {
   
   if (userInfo.state === "awaiting_name") {
     await callScript("registerUser", { userId, name: text, chatId });
-    await sendMessage(chatId, `✅ Зареєстровано як: ${text}\n\nДоступні команди:\n/маршрут — твої виклики\n/вхідні — нові виклики\n/статус — твоя статистика`);
-    return;
+    const keyboard = {
+  keyboard: [
+    [{ text: "📋 Маршрут" }, { text: "📥 Вхідні" }],
+    [{ text: "📊 Статус" }]
+  ],
+  resize_keyboard: true,
+  persistent: true
+};
+await sendMessage(chatId, `✅ Зареєстровано як: ${text}`, keyboard);
   }
 
   if (!userInfo.name) {

@@ -1,11 +1,42 @@
 const SHEET_ID = "1CBVE5_5pAc5aeUytlaenFeoQDNCGg1qAqmlALUV7sh0";
 const BOT_TOKEN = "8365935226:AAGTV3GtQBA-TvABozh5978PQIwLToFT9wo";
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzfl9JYg_tRE6EsoRDK1p-fYmVRFjQUepbDWkjt11KqkkSx_RsFHM3ijvumNb15nAjmlw/exec";
+const CATALOG = [
+  { name: "Astoria", url: "https://drive.google.com/file/d/13HVPmChNmmogfSWZu26i0tG4BN12z1zC/view" },
+  { name: "Brasilia", url: "https://drive.google.com/file/d/1KJ5KlAQfFyGsHMvni4l16RW-ckMZRMoz/view" },
+  { name: "Carimali", url: "https://drive.google.com/file/d/1aH4Zpg16MylL1ND9KLC1jOaco9hJ35Oo/view" },
+  { name: "Casadio", url: "https://drive.google.com/file/d/1ZOlhWcthFQ0Dl5RFXnK77gt_k2QKXPH_/view" },
+  { name: "Cimbali", url: "https://drive.google.com/file/d/104mi62fLWoC4s4AVsif20dFVWViIopp0/view" },
+  { name: "Expobar", url: "https://drive.google.com/file/d/1f2KkJsRXAerc1t1KbdzIqWuAiytUk5zb/view" },
+  { name: "Dalla Corte", url: "https://drive.google.com/file/d/1Rm12fHdIZhfai8dK7VPiqkkrEAh1kReB/view" },
+  { name: "Elektra", url: "https://drive.google.com/file/d/1RJJ5g4KR38542KbUD4Qre4o7PPt8VvCy/view" },
+  { name: "Faema", url: "https://drive.google.com/file/d/1IrP5sZ1pHDaYni1XYcGcTXUBxE9_hsDp/view" },
+  { name: "La Marzocco", url: "https://drive.google.com/file/d/1yeRVE7Cxvnucpe-M_7fEwfKv8ZLH2wzj/view" },
+  { name: "La San Marco", url: "https://drive.google.com/file/d/1mhwyb7q5RjcRuQLV3y2vs6K-gdpg1Jaj/view" },
+  { name: "La Spaziale", url: "https://drive.google.com/file/d/16WpjzGOIz3NIYl1oHaXThPy0k4b29FXp/view" },
+  { name: "Nuova Simonelli", url: "https://drive.google.com/file/d/1M5eUAGm7jGkNlnA7gtykEuKeV6LiGMiT/view" },
+  { name: "Rancilio", url: "https://drive.google.com/file/d/1fbUy-wASJ8wEACqQ-LEkq--lzmH3hKFL/view" },
+  { name: "Sanremo", url: "https://drive.google.com/file/d/1ZqypGkuFjTsMQK_aXM34x6Zbc99nOKhy/view" },
+  { name: "SV Sab Italia", url: "https://drive.google.com/file/d/1GaUSBnL4fI_6cMANesm8pWzAi2x7VcHx/view" },
+  { name: "Vibiemme", url: "https://drive.google.com/file/d/1CsBrtrsCuIgk78QUfBDYBNjIFLUw8bDN/view" },
+  { name: "Victoria Arduino", url: "https://drive.google.com/file/d/1xivlnkDupN8BmSwv-LrzQP71H-iXTyYe/view" },
+  { name: "Wega", url: "https://drive.google.com/file/d/1eokWIhVI1t3oCrau_yvVQOGkKyemU_w-/view" },
+  { name: "WMF 1500s", url: "https://drive.google.com/file/d/1xSlo0JFM5PSyI-bZqDPQ6fS9E0H2RCBh/view" },
+  { name: "WMF 5000s", url: "https://drive.google.com/file/d/1tGtoCMdcjvezn_n447IGWmDjbsdpPo7I/view" },
+  { name: "WMF Bistro", url: "https://drive.google.com/file/d/1pGs93Ksj00sCSuC-T9DDl1S6Yv9HwCN_/view" },
+  { name: "WMF 8000s", url: "https://drive.google.com/file/d/1LlgeGjgkN4h1jD3osKWb8fRvHdUOqqT1/view" },
+  { name: "Phedra", url: "https://drive.google.com/file/d/1uiraRyHbPSGRj9Bxoy14lPfzI5j5G-vE/view" },
+  { name: "Iper", url: "https://drive.google.com/file/d/1pto0ZZ-giCSuVPCWtksOz2YIPpgIPcZA/view" },
+  { name: "F11", url: "https://drive.google.com/file/d/1ChVA-FGNwr13qtjf0hVM-kVncKmkyxGH/view" },
+  { name: "F12", url: "https://drive.google.com/file/d/1lG_ozDPgn0a0vAR6xOOlQocRj-c_iirs/view" },
+  { name: "Jettino JL24", url: "https://drive.google.com/file/d/1qVxrCXwXIKNnV4MT1RqynC0NtGzpqWaC/view" },
+  { name: "Coffeebar", url: "https://drive.google.com/file/d/1MsXGOrfTGNLCexwslU0O_04eoG7cgJLa/view" }
+];
 
 const MAIN_KEYBOARD = {
   keyboard: [
     [{ text: "📋 Маршрут" }, { text: "📥 Вхідні" }],
-    [{ text: "📊 Статус" }]
+    [{ text: "📊 Статус" }, { text: "📚 Каталог" }]
   ],
   resize_keyboard: true,
   persistent: true
@@ -49,6 +80,17 @@ async function handleMessage(msg) {
   const userId = msg.from.id.toString();
 
   // Замінюємо кнопки на команди
+  if (text === "📚 Каталог") {
+  // Формуємо кнопки по 2 в ряд
+  const rows = [];
+  for (let i = 0; i < CATALOG.length; i += 2) {
+    const row = [{ text: CATALOG[i].name, callback_data: `cat_${i}` }];
+    if (CATALOG[i+1]) row.push({ text: CATALOG[i+1].name, callback_data: `cat_${i+1}` });
+    rows.push(row);
+  }
+  await sendMessage(chatId, "📚 Вибери бренд/модель:", { inline_keyboard: rows });
+  return;
+}
   if (text === "📋 Маршрут") text = "/маршрут";
   if (text === "📥 Вхідні") text = "/вхідні";
   if (text === "📊 Статус") text = "/статус";
@@ -162,4 +204,11 @@ async function handleCallback(query) {
     await callScript("takeCall", { row, userName: userInfo.name });
     await sendMessage(chatId, "📥 Виклик взято в роботу!");
   }
+  else if (data.startsWith("cat_")) {
+  const idx = parseInt(data.replace("cat_", ""));
+  const item = CATALOG[idx];
+  if (item) {
+    await sendMessage(chatId, `📚 ${item.name}\n\n🔗 Каталог деталей:\n${item.url}`);
+  }
+}
 }

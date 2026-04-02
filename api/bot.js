@@ -32,11 +32,27 @@ const CATALOG = [
   { name: "Jettino JL24", url: "https://drive.google.com/file/d/1qVxrCXwXIKNnV4MT1RqynC0NtGzpqWaC/view" },
   { name: "Coffeebar", url: "https://drive.google.com/file/d/1MsXGOrfTGNLCexwslU0O_04eoG7cgJLa/view" }
 ];
-
+const CONTACTS = [
+  { city: "Київ", name: "Технік WMF — Сергій", phone: "+380674575670" },
+  { city: "Київ", name: "Технік WMF — Олександр", phone: "+380939153877" },
+  { city: "Київ", name: "NAYAX безконтактна оплата", phone: "+380673465533" },
+  { city: "Київ", name: "Технік Jettino (Liberty)", phone: "+380993332641" },
+  { city: "Київ", name: "Технік NECTA вендінг", phone: "+380673290108" },
+  { city: "Київ", name: "Технік Simonelli та Astoria — Юрій", phone: "+380506027827" },
+  { city: "Київ", name: "Ремонт плат — Юра", phone: "+380930095859" },
+  { city: "Чернівці", name: "Ремонт бойлерів (пайка) — Євген Хтема", phone: "+380950451563" },
+  { city: "Чернівці", name: "Технік Bazaro", phone: "+380990271314" },
+  { city: "Чернівці", name: "Адмін Bazaro", phone: "+380683901444" },
+  { city: "Чернівці", name: "Технік Buko Rома", phone: "+380957490958" },
+  { city: "Франківськ", name: "Михайло — Фабрика кави (Marzocco, кавомолки)", phone: "+380504310607" },
+  { city: "Львів", name: "Оксана — Cab Club", phone: "+380675314481" },
+  { city: "Вінниця", name: "Вадим — Аутсорс", phone: "+380678746093" }
+];
 const MAIN_KEYBOARD = {
   keyboard: [
     [{ text: "📋 Маршрут" }, { text: "📥 Вхідні" }],
-    [{ text: "📊 Статус" }, { text: "📚 Каталог" }]
+    [{ text: "📊 Статус" }, { text: "📚 Каталог" }],
+    [{ text: "📞 Контакти" }]
   ],
   resize_keyboard: true,
   persistent: true
@@ -89,6 +105,25 @@ async function handleMessage(msg) {
     rows.push(row);
   }
   await sendMessage(chatId, "📚 Вибери бренд/модель:", { inline_keyboard: rows });
+  return;
+}
+  if (text === "📞 Контакти") {
+  // Групуємо по містах
+  const cities = {};
+  CONTACTS.forEach(c => {
+    if (!cities[c.city]) cities[c.city] = [];
+    cities[c.city].push(c);
+  });
+  
+  let msg = "📞 Контакти сервісів:\n\n";
+  for (const city in cities) {
+    msg += `🏙 ${city}\n`;
+    cities[city].forEach(c => {
+      msg += `• ${c.name}\n  ${c.phone}\n`;
+    });
+    msg += "\n";
+  }
+  await sendMessage(chatId, msg, MAIN_KEYBOARD);
   return;
 }
   if (text === "📋 Маршрут") text = "/маршрут";
